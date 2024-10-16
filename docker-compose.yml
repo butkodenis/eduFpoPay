@@ -16,6 +16,28 @@ services:
       - TZ=Europe/Kiev
     networks:
       - eduPay-network
+  ui:
+    build:
+      context: ./ui
+      dockerfile: dockerfile.dev
+    container_name: eduPay-ui
+    stdin_open: true
+    tty: true
+    env_file: .env
+    ports:
+      # local->container
+      - '5173:5173'
+    volumes:
+      - ./ui:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - TZ=Europe/Kiev
+    depends_on:
+      - api
+
+    networks:
+      - eduPay-network
 
 networks:
   eduPay-network:
