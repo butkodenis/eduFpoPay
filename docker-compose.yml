@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: dockerfile.dev
+    container_name: eduPay-api
+    env_file: .env
+    ports:
+      # local->container
+      - $NODE_PORT:$NODE_PORT
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    environment:
+      - TZ=Europe/Kiev
+    networks:
+      - eduPay-network
+
+networks:
+  eduPay-network:
+    driver: bridge
