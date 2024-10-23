@@ -1,5 +1,5 @@
 # используем образ node:18
-FROM node:18
+FROM node:22
 # устанавливаем директорию приложения внутри контейнера
 WORKDIR /app
 # копируем package.json и package-lock.json для установки зависимостей
