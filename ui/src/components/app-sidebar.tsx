@@ -1,4 +1,13 @@
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
+import {
+  Calendar,
+  Home,
+  Inbox,
+  Search,
+  Settings,
+  CreditCard,
+  HomeIcon,
+  InboxIcon,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -10,34 +19,40 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuBadge,
 } from '@/components/ui/sidebar';
 
 // Menu items.
 const items = [
   {
-    title: 'Home',
+    title: 'Dashboard',
     url: '/',
     icon: Home,
   },
   {
-    title: 'About',
+    title: 'Студенти',
     url: '/about',
     icon: Inbox,
   },
   {
-    title: 'Calendar',
+    title: 'Юр. лица',
     url: '#',
     icon: Calendar,
   },
   {
-    title: 'Search',
+    title: 'Договоры',
     url: '#',
     icon: Search,
   },
   {
-    title: 'Settings',
+    title: 'Баланс',
     url: '#',
     icon: Settings,
+  },
+  {
+    title: 'Плетежи',
+    url: '#',
+    icon: CreditCard,
   },
 ];
 
@@ -49,16 +64,20 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem key="Dashboard">
+                <SidebarMenuButton asChild>
+                  <Link to="/">
+                    <HomeIcon />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <Link to="/students">
+                    <InboxIcon />
+                    <span>Студенти</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
