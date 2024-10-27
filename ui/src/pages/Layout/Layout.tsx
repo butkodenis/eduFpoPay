@@ -1,19 +1,16 @@
-import { Link, Outlet } from 'react-router-dom';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
+import { Outlet } from 'react-router-dom';
 
-const Layout: React.FC = () => {
+export default function Layout() {
   return (
-    <div>
-      <header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
+    <SidebarProvider>
+      <AppSidebar />
       <main>
+        <SidebarTrigger />
+
         <Outlet />
       </main>
-    </div>
+    </SidebarProvider>
   );
-};
-
-export default Layout;
+}
