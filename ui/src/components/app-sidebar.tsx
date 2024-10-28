@@ -58,7 +58,7 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="floating">
+    <Sidebar variant="sidebar">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -68,13 +68,17 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link to="/">
                     <HomeIcon />
-                    <span>Dashboard</span>
+                    <p className="text-lg font-semibold text-indigo-600">
+                      Dashboard
+                    </p>
                   </Link>
                 </SidebarMenuButton>
                 <SidebarMenuButton asChild>
                   <Link to="/students">
                     <InboxIcon />
-                    <span>Студенти</span>
+                    <p className="text-lg font-semibold text-indigo-600">
+                      Студенти
+                    </p>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
