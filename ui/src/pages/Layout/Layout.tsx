@@ -6,7 +6,7 @@ export default function Layout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1 p-6 bg-gray-50">
+      <main className="flex-1 p-2">
         <SidebarTrigger />
 
         <Outlet />
