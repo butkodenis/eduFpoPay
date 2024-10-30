@@ -8,6 +8,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { CustomTable } from '@/components/Table/CustomTable';
+
 const Students: React.FC = () => {
   return (
     <div className="flex flex-wrap -mx-2">
@@ -57,6 +59,9 @@ const Students: React.FC = () => {
             </TableBody>
           </Table>
         </div>
+      </div>
+      <div className="w-full md:w-1/2 lg:w-2/3 px-2 mb-4">
+        <div className="p-4 shadow rounded border border-slate-300"></div>
       </div>
     </div>
   );
