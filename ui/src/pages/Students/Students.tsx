@@ -13,26 +13,26 @@ import { CustomTable } from '@/components/Table/CustomTable';
 const Students: React.FC = () => {
   return (
     <div className="flex flex-wrap -mx-2">
-      <div className="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-        <div className="p-4 shadow rounded border border-slate-300">
+      <div className="w-full md:w-1/2 lg:w-1/3 px-1 mb-2">
+        <div className="p-2 shadow rounded border border-slate-300">
           <h2 className="text-xl font-bold mb-2">Имя студента 1</h2>
           <p>Описание студента 1</p>
         </div>
       </div>
-      <div className="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-        <div className="p-4 shadow rounded border border-slate-300">
+      <div className="w-full md:w-1/2 lg:w-1/3 px-1 mb-2">
+        <div className="p-2 shadow rounded border border-slate-300">
           <h2 className="text-xl font-bold mb-2">Имя студента 2</h2>
           <p>Описание студента 2</p>
         </div>
       </div>
-      <div className="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-        <div className="p-4 shadow rounded border border-slate-300">
+      <div className="w-full md:w-1/2 lg:w-1/3 px-1 mb-2">
+        <div className="p-2 shadow rounded border border-slate-300">
           <h2 className="text-xl font-bold mb-2">Имя студента 3</h2>
           <p>Описание студента 3</p>
         </div>
       </div>
-      <div className="w-full md:w-1/2 lg:w-2/3 px-2 mb-4">
-        <div className="p-4 shadow rounded border border-slate-300">
+      <div className="w-full md:w-1/2 lg:w-2/3 px-1 mb-2">
+        <div className="p-2 shadow rounded border border-slate-300">
           <Table>
             <TableCaption>A list of your recent invoices.</TableCaption>
             <TableHeader>
@@ -60,8 +60,8 @@ const Students: React.FC = () => {
           </Table>
         </div>
       </div>
-      <div className="w-full md:w-1/2 lg:w-2/3 px-2 mb-4">
-        <div className="p-4 shadow rounded border border-slate-300"></div>
+      <div className="w-full md:w-1/2 lg:w-2/3 px-1 mb-2">
+        <div className="p-2 shadow rounded border border-slate-300"></div>
       </div>
     </div>
   );

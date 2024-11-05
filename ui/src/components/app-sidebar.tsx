@@ -7,6 +7,7 @@ import {
   CreditCard,
   HomeIcon,
   InboxIcon,
+  Brain,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -78,6 +79,14 @@ export function AppSidebar() {
                     <InboxIcon />
                     <p className="text-lg font-semibold text-indigo-600">
                       Студенти
+                    </p>
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuButton asChild>
+                  <Link to="/courses">
+                    <Brain />
+                    <p className="text-lg font-semibold text-indigo-600">
+                      Курси
                     </p>
                   </Link>
                 </SidebarMenuButton>
