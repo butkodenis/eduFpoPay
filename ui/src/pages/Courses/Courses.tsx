@@ -8,6 +8,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+
 import axios from 'axios';
 import {
   useReactTable,
@@ -66,6 +78,14 @@ const Courses = () => {
       </div>
       <div className="w-full px-2 mb-2">
         <div className="p-1 shadow rounded border border-slate-300">
+          <div className="flex flex-row px-2 mb-2 gap-4">
+            <div className="flex items-center py-4">
+              <Input placeholder="фільтр по назві..." className="max-w-sm" />
+            </div>
+            <div className="flex items-center py-4">
+              <Input placeholder="фільтр по кафедрі..." className="max-w-sm" />
+            </div>
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -98,6 +118,24 @@ const Courses = () => {
               ))}
             </TableBody>
           </Table>
+          <div className="flex items-center justify-end space-x-2 py-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       </div>
     </div>
