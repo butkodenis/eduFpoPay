@@ -9,12 +9,16 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import axios from 'axios';
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from '@tanstack/react-table';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    // Запрос данных с сервера
     const fetchCourses = async () => {
       try {
         const response = await axios.get(
@@ -29,6 +33,30 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
+  const columns = [
+    { accessorKey: 'courseName', header: 'Название' },
+    { accessorKey: 'courseType', header: 'Тип' },
+    { accessorKey: 'coursePrice', header: 'Цена' },
+    { accessorKey: 'coursePoints', header: 'Баллы' },
+    { accessorKey: 'courseDepartment', header: 'Кафедра' },
+    {
+      accessorKey: 'courseDateStart',
+      header: 'Начало',
+      cell: (info) => new Date(info.getValue()).toLocaleDateString(),
+    },
+    {
+      accessorKey: 'courseDateEnd',
+      header: 'Окончание',
+      cell: (info) => new Date(info.getValue()).toLocaleDateString(),
+    },
+  ];
+
+  const table = useReactTable({
+    data: courses,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <div className="flex flex-wrap -mx-2">
       <div className="w-full px-2 mb-2">
@@ -41,35 +69,31 @@ const Courses = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Название</TableHead>
-                <TableHead>Тип</TableHead>
-                <TableHead>Цена</TableHead>
-                <TableHead>Баллы</TableHead>
-                <TableHead>Кафедра</TableHead>
-                <TableHead>Начало</TableHead>
-                <TableHead>Окончание</TableHead>
+                {table
+                  .getHeaderGroups()
+                  .map((headerGroup) =>
+                    headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </TableHead>
+                    ))
+                  )}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {courses.map((course) => (
-                <TableRow key={course.id}>
-                  <TableCell className="font-medium">
-                    {course.courseName}
-                  </TableCell>
-                  <TableCell>{course.courseType}</TableCell>
-                  <TableCell className="text-right">
-                    {course.coursePrice}₴
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {course.coursePoints}
-                  </TableCell>
-                  <TableCell>{course.courseDepartment}</TableCell>
-                  <TableCell>
-                    {new Date(course.courseDateStart).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    {new Date(course.courseDateEnd).toLocaleDateString()}
-                  </TableCell>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
