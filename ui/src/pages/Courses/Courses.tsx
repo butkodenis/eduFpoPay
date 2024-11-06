@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -7,39 +8,70 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import axios from 'axios';
 
 const Courses = () => {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    // Запрос данных с сервера
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/courses/all`
+        );
+        setCourses(response.data.courses);
+      } catch (error) {
+        console.error('Ошибка загрузки курсов:', error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
   return (
     <div className="flex flex-wrap -mx-2">
-      <div className="w-full  px-2 mb-2">
-        <div className="p-1 shadow rounded border border-slate-300 ">
-          <h5 className="text-xl font-bold mb-1">Курси</h5>
+      <div className="w-full px-2 mb-2">
+        <div className="p-1 shadow rounded border border-slate-300">
+          <h5 className="text-xl font-bold mb-1">Курси ({courses.length})</h5>
         </div>
       </div>
-      <div className="w-full  px-2 mb-2">
-        <div className="p-1 shadow rounded border border-slate-300 ">
+      <div className="w-full px-2 mb-2">
+        <div className="p-1 shadow rounded border border-slate-300">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Курс</TableHead>
-                <TableHead>Статус</TableHead>
-                <TableHead>Метод</TableHead>
-                <TableHead className="text-right">Ціна</TableHead>
+                <TableHead>Название</TableHead>
+                <TableHead>Тип</TableHead>
+                <TableHead>Цена</TableHead>
+                <TableHead>Баллы</TableHead>
+                <TableHead>Кафедра</TableHead>
+                <TableHead>Начало</TableHead>
+                <TableHead>Окончание</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">Курс 1</TableCell>
-                <TableCell>Оплачено</TableCell>
-                <TableCell>Кредитна карта</TableCell>
-                <TableCell className="text-right">250.00$</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">Курс 2</TableCell>
-                <TableCell>Оплачено</TableCell>
-                <TableCell>Кредитна карта</TableCell>
-                <TableCell className="text-right">250.00$</TableCell>
-              </TableRow>
+              {courses.map((course) => (
+                <TableRow key={course.id}>
+                  <TableCell className="font-medium">
+                    {course.courseName}
+                  </TableCell>
+                  <TableCell>{course.courseType}</TableCell>
+                  <TableCell className="text-right">
+                    {course.coursePrice}₴
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {course.coursePoints}
+                  </TableCell>
+                  <TableCell>{course.courseDepartment}</TableCell>
+                  <TableCell>
+                    {new Date(course.courseDateStart).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(course.courseDateEnd).toLocaleDateString()}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>
