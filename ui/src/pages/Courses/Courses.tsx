@@ -14,24 +14,6 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-} from '@/components/ui/pagination';
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -49,14 +31,14 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 
-import { Link } from 'react-router-dom';
+import { PaginationRow } from '@/components/Pagination/Pagination';
 
-import { ChevronRight, ChevronLeft, SquarePlus, Filter } from 'lucide-react';
+import { SquarePlus, Filter } from 'lucide-react';
 
 const Courses = () => {
   const { register, handleSubmit, reset } = useForm();
   const [courses, setCourses] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -120,19 +102,14 @@ const Courses = () => {
               <div className="flex items-center py-4">
                 <Input placeholder="фільтр по назві..." className="max-w-sm" />
               </div>
-              <div className="flex items-center py-4">
-                <Input
-                  placeholder="фільтр по кафедрі..."
-                  className="max-w-sm"
-                />
-              </div>
+
               <div className="flex items-center py-4">
                 <Button variant="outline">
                   <Filter />
                   Пошук
                 </Button>
               </div>
-              <div className="flex items-center py-4">
+              <div className="flex items-center py-4 ml-auto">
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button>
@@ -175,6 +152,8 @@ const Courses = () => {
                           </Label>
                           <Input
                             id="coursePrice"
+                            type="number"
+                            step={100}
                             {...register('coursePrice')}
                             className="col-span-3"
                           />
@@ -185,6 +164,7 @@ const Courses = () => {
                           </Label>
                           <Input
                             id="coursePoints"
+                            type="number"
                             {...register('coursePoints')}
                             className="col-span-3"
                           />
@@ -273,47 +253,7 @@ const Courses = () => {
                 )}
               </TableBody>
             </Table>
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <Link to="#">
-                      {' '}
-                      <ChevronLeft />
-                    </Link>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <Link to="#">
-                      {' '}
-                      <ChevronRight />
-                    </Link>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-              <Select
-                value={rowsPerPage}
-                onValueChange={(value: string) => setRowsPerPage(Number(value))}
-              >
-                <SelectTrigger className="w-[80px]">
-                  <SelectValue placeholder={`${rowsPerPage} rows per page`} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Рядків на сторінці</SelectLabel>
-                    <SelectItem value={5}>5</SelectItem>
-                    <SelectItem value={10}>10</SelectItem>
-                    <SelectItem value={15}>15</SelectItem>
-                    <SelectItem value={20}>20</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+            <PaginationRow />
           </div>
         </div>
       </div>
