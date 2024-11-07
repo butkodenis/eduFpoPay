@@ -57,16 +57,20 @@ const Courses = () => {
   const { register, handleSubmit, reset } = useForm();
   const [courses, setCourses] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
+        setIsLoading(true);
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/api/courses/all`
         );
         setCourses(response.data.courses);
       } catch (error) {
         console.error('Ошибка загрузки курсов:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -248,18 +252,25 @@ const Courses = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
+                {isLoading ? (
+                  <div>
+                    {' '}
+                    <p className="text-lg text-red-600"> Завантаження </p>{' '}
+                  </div>
+                ) : (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
             <div className="flex items-center justify-end space-x-2 py-4">
