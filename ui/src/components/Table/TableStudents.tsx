@@ -30,5 +30,6 @@ const TableStudents = () => {
       </TableBody>
     </Table>
   );
+};
 
 export default TableStudents;

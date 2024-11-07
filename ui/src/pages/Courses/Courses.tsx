@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -19,8 +18,6 @@ import {
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from '@/components/ui/pagination';
 
 import {
@@ -58,7 +55,7 @@ import { ChevronRight, ChevronLeft, SquarePlus, Filter } from 'lucide-react';
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   // Состояние для выбора количества строк на странице
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -231,7 +228,7 @@ const Courses = () => {
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <Link>
+                    <Link to="#">
                       {' '}
                       <ChevronLeft />
                     </Link>
@@ -243,7 +240,7 @@ const Courses = () => {
                     <PaginationEllipsis />
                   </PaginationItem>
                   <PaginationItem>
-                    <Link>
+                    <Link to="#">
                       {' '}
                       <ChevronRight />
                     </Link>
@@ -254,7 +251,7 @@ const Courses = () => {
               {/* Select для выбора количества строк на странице */}
               <Select
                 value={rowsPerPage}
-                onValueChange={(value) => setRowsPerPage(value)}
+                onValueChange={(value: string) => setRowsPerPage(Number(value))} // Преобразуем значение в число
               >
                 <SelectTrigger className="w-[80px]">
                   <SelectValue placeholder={`${rowsPerPage} rows per page`} />
@@ -262,10 +259,10 @@ const Courses = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Рядків на сторінці</SelectLabel>
-                    <SelectItem value={5}>5</SelectItem>
-                    <SelectItem value={10}>10</SelectItem>
-                    <SelectItem value={15}>15</SelectItem>
-                    <SelectItem value={20}>20</SelectItem>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="15">15</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

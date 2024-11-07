@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { CustomTable } from '@/components/Table/CustomTable';
+
 
 const Students: React.FC = () => {
   return (
