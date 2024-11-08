@@ -28,7 +28,8 @@ const CourseForm = ({ onSubmit, setOpen }) => {
       coursePrice: 0,
       coursePoints: 50,
       courseDepartment: '',
-      courseDateStart: format(new Date(), 'yyyy-MM-dd'),
+      courseDateStart: '',
+      courseDateEnd: '',
     },
   });
 
@@ -139,9 +140,46 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                   >
                     <CalendarIcon />
                     {field.value ? (
-                      format(new Date(field.value), 'PPP')
+                      format(field.value, 'PPP')
                     ) : (
-                      <span>Выберите дату</span>
+                      <span>Pick a date</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="courseDateEnd" className="text-right">
+            Закінчення
+          </Label>
+          <Controller
+            control={control}
+            name="courseDateEnd"
+            render={({ field }) => (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      ' justify-start text-left font-normal  col-span-3', // Класс w-full для растягивания на всю ширину
+                      !field.value && 'text-muted-foreground'
+                    )}
+                  >
+                    <CalendarIcon />
+                    {field.value ? (
+                      format(field.value, 'PPP')
+                    ) : (
+                      <span>Pick a date</span>
                     )}
                   </Button>
                 </PopoverTrigger>
