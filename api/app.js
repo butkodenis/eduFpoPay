@@ -25,6 +25,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api', require('./Routers/courseRouter'));
+app.use('/api', require('./Routers/departmentRouter'));
 
 app.listen(NODE_PORT, () => {
   console.log(`Server is listening on port  ${NODE_PORT}`);

@@ -1,4 +1,5 @@
 const Courses = require('../Models/Courses');
+const Departments = require('../Models/Departments');
 
 class CourseController {
   async createCourse(req, res) {
