@@ -1,7 +1,11 @@
 import { useForm, Controller } from 'react-hook-form';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+
 import {
   Select,
   SelectContent,
@@ -21,6 +25,8 @@ import {
 import { cn } from '@/lib/utils';
 
 const CourseForm = ({ onSubmit, setOpen }) => {
+  const [departments, setDepartments] = useState([]);
+
   const { handleSubmit, control, reset } = useForm({
     defaultValues: {
       courseName: '',
@@ -33,8 +39,24 @@ const CourseForm = ({ onSubmit, setOpen }) => {
     },
   });
 
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/departments/all`
+        );
+        setDepartments(response.data.departments);
+      } catch (error) {
+        console.error('Error fetching departments:', error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
   const handleFormSubmit = (data) => {
     onSubmit(data);
+
     reset();
     setOpen(false);
   };
@@ -117,7 +139,18 @@ const CourseForm = ({ onSubmit, setOpen }) => {
             control={control}
             name="courseDepartment"
             render={({ field }) => (
-              <Input id="courseDepartment" {...field} className="col-span-3" />
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Выберите кафедру" />
+                </SelectTrigger>
+                <SelectContent>
+                  {departments.map((department) => (
+                    <SelectItem key={department.id} value={department.id}>
+                      {department.departmentName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           />
         </div>
