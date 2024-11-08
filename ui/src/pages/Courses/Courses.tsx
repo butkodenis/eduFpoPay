@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+
 import {
   Table,
   TableBody,
@@ -9,9 +9,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { SquarePlus, Filter } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 
 import {
   Dialog,
@@ -23,14 +23,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
 import axios from 'axios';
 
 import {
@@ -40,36 +32,12 @@ import {
 } from '@tanstack/react-table';
 
 import { PaginationRow } from '@/components/Pagination/Pagination';
-
-import { SquarePlus, Filter } from 'lucide-react';
-
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import CourseForm from '@/components/Forms/CourseForm';
 
 const Courses = () => {
-  const { register, handleSubmit, control, reset } = useForm({
-    defaultValues: {
-      courseName: '',
-      courseType: '',
-      coursePrice: 0,
-      coursePoints: 50,
-      courseDepartment: '',
-      courseDateStart: '',
-      courseDateEnd: '',
-    },
-  });
   const [courses, setCourses] = useState([]);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [date, setDate] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -115,7 +83,7 @@ const Courses = () => {
 
   const onSubmit = (data) => {
     console.log('Данные формы:', data);
-    reset(); // Очистка формы после сохранения
+
     setOpen(false); // Закрытие модального окна
   };
 
@@ -155,110 +123,7 @@ const Courses = () => {
                         Введіть інформацію про курс та натисніть "Додати"
                       </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="name" className="text-right">
-                            Назва
-                          </Label>
-                          <Controller
-                            control={control}
-                            name="courseName"
-                            render={({ field }) => (
-                              <Input
-                                id="courseName"
-                                {...field}
-                                className="col-span-3"
-                              />
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="courseType" className="text-right">
-                            Тип
-                          </Label>
-                          <Controller
-                            control={control}
-                            name="courseType"
-                            render={({ field }) => (
-                              <Select
-                                value={field.value}
-                                onValueChange={(value) => field.onChange(value)}
-                              >
-                                <SelectTrigger className="col-span-3">
-                                  <SelectValue placeholder="Выберите тип" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Стажування">
-                                    Cтажування
-                                  </SelectItem>
-                                  <SelectItem value="Спеціалізація">
-                                    Спеціалізація
-                                  </SelectItem>
-                                </SelectContent>
-                              </Select>
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="coursePrice" className="text-right">
-                            Ціна
-                          </Label>
-                          <Controller
-                            control={control}
-                            name="coursePrice"
-                            render={({ field }) => (
-                              <Input
-                                id="coursePrice"
-                                type="number"
-                                step={100}
-                                {...field}
-                                className="col-span-3"
-                              />
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="coursePoints" className="text-right">
-                            Бали
-                          </Label>
-                          <Controller
-                            control={control}
-                            name="coursePoints"
-                            render={({ field }) => (
-                              <Input
-                                id="coursePoints"
-                                type="number"
-                                {...field}
-                                className="col-span-3"
-                              />
-                            )}
-                          />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label
-                            htmlFor="courseDepartment"
-                            className="text-right"
-                          >
-                            Кафедра
-                          </Label>
-                          <Controller
-                            control={control}
-                            name="courseDepartment"
-                            render={({ field }) => (
-                              <Input
-                                id="courseDepartment"
-                                {...field}
-                                className="col-span-3"
-                              />
-                            )}
-                          />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button type="submit">Сохранить</Button>
-                      </DialogFooter>
-                    </form>
+                    <CourseForm onSubmit={onSubmit} setOpen={setOpen} />
                   </DialogContent>
                 </Dialog>
               </div>

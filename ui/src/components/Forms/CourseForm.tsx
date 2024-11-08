@@ -1,89 +1,118 @@
-// components/Forms/CourseForm.js
-
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
+import { useForm, Controller } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-const CourseForm = ({ onSubmit }) => {
-  const { register, handleSubmit, reset } = useForm();
+const CourseForm = ({ onSubmit, setOpen }) => {
+  const { handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      courseName: '',
+      courseType: '',
+      coursePrice: 0,
+      coursePoints: 50,
+      courseDepartment: '',
+    },
+  });
 
   const handleFormSubmit = (data) => {
     onSubmit(data);
     reset();
+    setOpen(false);
   };
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="name" className="text-right">
-            Ім'я
+          <Label htmlFor="courseName" className="text-right">
+            Назва
           </Label>
-          <Input id="name" {...register('name')} className="col-span-3" />
+          <Controller
+            control={control}
+            name="courseName"
+            render={({ field }) => (
+              <Input id="courseName" {...field} className="col-span-3" />
+            )}
+          />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="courseType" className="text-right">
             Тип
           </Label>
-          <Input
-            id="courseType"
-            {...register('courseType')}
-            className="col-span-3"
+          <Controller
+            control={control}
+            name="courseType"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Выберите тип" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Стажування">Cтажування</SelectItem>
+                  <SelectItem value="Спеціалізація">Спеціалізація</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="coursePrice" className="text-right">
             Ціна
           </Label>
-          <Input
-            id="coursePrice"
-            {...register('coursePrice')}
-            className="col-span-3"
+          <Controller
+            control={control}
+            name="coursePrice"
+            render={({ field }) => (
+              <Input
+                id="coursePrice"
+                type="number"
+                step={100}
+                {...field}
+                className="col-span-3"
+              />
+            )}
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="coursePoints" className="text-right">
             Бали
           </Label>
-          <Input
-            id="coursePoints"
-            {...register('coursePoints')}
-            className="col-span-3"
+          <Controller
+            control={control}
+            name="coursePoints"
+            render={({ field }) => (
+              <Input
+                id="coursePoints"
+                type="number"
+                {...field}
+                className="col-span-3"
+              />
+            )}
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="courseDepartment" className="text-right">
             Кафедра
           </Label>
-          <Input
-            id="courseDepartment"
-            {...register('courseDepartment')}
-            className="col-span-3"
-          />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="courseDateStart" className="text-right">
-            Початок
-          </Label>
-          <Input
-            id="courseDateStart"
-            {...register('courseDateStart')}
-            className="col-span-3"
-          />
-        </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="courseDateEnd" className="text-right">
-            Кінець
-          </Label>
-          <Input
-            id="courseDateEnd"
-            {...register('courseDateEnd')}
-            className="col-span-3"
+          <Controller
+            control={control}
+            name="courseDepartment"
+            render={({ field }) => (
+              <Input id="courseDepartment" {...field} className="col-span-3" />
+            )}
           />
         </div>
       </div>
-      <Button type="submit">Save changes</Button>
+      <div className="flex justify-end">
+        <Button type="submit">Сохранить</Button>
+      </div>
     </form>
   );
 };
