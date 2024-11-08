@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import {
   Table,
   TableBody,
@@ -23,6 +23,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 import axios from 'axios';
 
 import {
@@ -35,11 +43,33 @@ import { PaginationRow } from '@/components/Pagination/Pagination';
 
 import { SquarePlus, Filter } from 'lucide-react';
 
-const Courses = () => {
-  const { register, handleSubmit, reset } = useForm();
-  const [courses, setCourses] = useState([]);
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+
+const Courses = () => {
+  const { register, handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      courseName: '',
+      courseType: '',
+      coursePrice: 0,
+      coursePoints: 50,
+      courseDepartment: '',
+      courseDateStart: '',
+      courseDateEnd: '',
+    },
+  });
+  const [courses, setCourses] = useState([]);
+  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [date, setDate] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -86,6 +116,7 @@ const Courses = () => {
   const onSubmit = (data) => {
     console.log('Данные формы:', data);
     reset(); // Очистка формы после сохранения
+    setOpen(false); // Закрытие модального окна
   };
 
   return (
@@ -110,14 +141,14 @@ const Courses = () => {
                 </Button>
               </div>
               <div className="flex items-center py-4 ml-auto">
-                <Dialog>
-                  <DialogTrigger asChild>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger>
                     <Button>
                       <SquarePlus />
                       Додати курс
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent className="sm:max-w-[600px]">
                     <DialogHeader>
                       <DialogTitle>Додати курс</DialogTitle>
                       <DialogDescription>
@@ -128,45 +159,80 @@ const Courses = () => {
                       <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                           <Label htmlFor="name" className="text-right">
-                            Ім'я
+                            Назва
                           </Label>
-                          <Input
-                            id="name"
-                            {...register('courseName')}
-                            className="col-span-3"
+                          <Controller
+                            control={control}
+                            name="courseName"
+                            render={({ field }) => (
+                              <Input
+                                id="courseName"
+                                {...field}
+                                className="col-span-3"
+                              />
+                            )}
                           />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                           <Label htmlFor="courseType" className="text-right">
                             Тип
                           </Label>
-                          <Input
-                            id="courseType"
-                            {...register('courseType')}
-                            className="col-span-3"
+                          <Controller
+                            control={control}
+                            name="courseType"
+                            render={({ field }) => (
+                              <Select
+                                value={field.value}
+                                onValueChange={(value) => field.onChange(value)}
+                              >
+                                <SelectTrigger className="col-span-3">
+                                  <SelectValue placeholder="Выберите тип" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Стажування">
+                                    Cтажування
+                                  </SelectItem>
+                                  <SelectItem value="Спеціалізація">
+                                    Спеціалізація
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
                           />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                           <Label htmlFor="coursePrice" className="text-right">
                             Ціна
                           </Label>
-                          <Input
-                            id="coursePrice"
-                            type="number"
-                            step={100}
-                            {...register('coursePrice')}
-                            className="col-span-3"
+                          <Controller
+                            control={control}
+                            name="coursePrice"
+                            render={({ field }) => (
+                              <Input
+                                id="coursePrice"
+                                type="number"
+                                step={100}
+                                {...field}
+                                className="col-span-3"
+                              />
+                            )}
                           />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                           <Label htmlFor="coursePoints" className="text-right">
                             Бали
                           </Label>
-                          <Input
-                            id="coursePoints"
-                            type="number"
-                            {...register('coursePoints')}
-                            className="col-span-3"
+                          <Controller
+                            control={control}
+                            name="coursePoints"
+                            render={({ field }) => (
+                              <Input
+                                id="coursePoints"
+                                type="number"
+                                {...field}
+                                className="col-span-3"
+                              />
+                            )}
                           />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -176,33 +242,16 @@ const Courses = () => {
                           >
                             Кафедра
                           </Label>
-                          <Input
-                            id="courseDepartment"
-                            {...register('courseDepartment')}
-                            className="col-span-3"
-                          />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label
-                            htmlFor="courseDateStart"
-                            className="text-right"
-                          >
-                            Початок
-                          </Label>
-                          <Input
-                            id="courseDateStart"
-                            {...register('courseDateStart')}
-                            className="col-span-3"
-                          />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="courseDateEnd" className="text-right">
-                            Кінець
-                          </Label>
-                          <Input
-                            id="courseDateEnd"
-                            {...register('courseDateEnd')}
-                            className="col-span-3"
+                          <Controller
+                            control={control}
+                            name="courseDepartment"
+                            render={({ field }) => (
+                              <Input
+                                id="courseDepartment"
+                                {...field}
+                                className="col-span-3"
+                              />
+                            )}
                           />
                         </div>
                       </div>
