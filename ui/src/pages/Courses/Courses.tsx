@@ -147,10 +147,11 @@ const Courses = () => {
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                  <div>
-                    {' '}
-                    <p className="text-lg text-red-600"> Завантаження </p>{' '}
-                  </div>
+                  <TableRow>
+                    <TableCell colSpan={columns.length}>
+                      <p className="text-lg text-red-600">Завантаження...</p>
+                    </TableCell>
+                  </TableRow>
                 ) : (
                   table.getRowModel().rows.map((row) => (
                     <TableRow key={row.id}>

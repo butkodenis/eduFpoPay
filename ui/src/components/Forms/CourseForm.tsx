@@ -10,6 +10,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+
 const CourseForm = ({ onSubmit, setOpen }) => {
   const { handleSubmit, control, reset } = useForm({
     defaultValues: {
@@ -18,6 +28,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
       coursePrice: 0,
       coursePoints: 50,
       courseDepartment: '',
+      courseDateStart: format(new Date(), 'yyyy-MM-dd'),
     },
   });
 
@@ -106,6 +117,48 @@ const CourseForm = ({ onSubmit, setOpen }) => {
             name="courseDepartment"
             render={({ field }) => (
               <Input id="courseDepartment" {...field} className="col-span-3" />
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="courseDateStart" className="text-right">
+            Початок
+          </Label>
+          <Controller
+            control={control}
+            name="courseDateStart"
+            render={({ field }) => (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      ' justify-start text-left font-normal  col-span-3', // Класс w-full для растягивания на всю ширину
+                      !field.value && 'text-muted-foreground'
+                    )}
+                  >
+                    <CalendarIcon />
+                    {field.value ? (
+                      format(new Date(field.value), 'PPP')
+                    ) : (
+                      <span>Выберите дату</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ? new Date(field.value) : undefined}
+                    onSelect={(date) => {
+                      // Проверка, что `date` определен и отличается от текущего значения
+                      if (date && format(date, 'yyyy-MM-dd') !== field.value) {
+                        field.onChange(format(date, 'yyyy-MM-dd'));
+                      }
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             )}
           />
         </div>
