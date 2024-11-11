@@ -18,6 +18,7 @@ import {
 
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
+
 import { Calendar } from '@/components/ui/calendar';
 import {
   Popover,
@@ -30,7 +31,9 @@ const courseSchema = z.object({
   courseName: z
     .string()
     .min(2, 'Назва курса должна содержать минимум 2 символа'),
-  courseType: z.enum(['Стажування', 'Спеціалізація'], 'Выберите тип курса'),
+  courseType: z
+    .enum(['Стажування', 'Спеціалізація'])
+    .nonempty('Выберите тип курса'),
   coursePrice: z
     .number()
     .positive('Цена должна быть положительным числом')
@@ -56,7 +59,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
     resolver: zodResolver(courseSchema),
     defaultValues: {
       courseName: '',
-      courseType: '',
+      courseType: undefined,
       coursePrice: 0,
       coursePoints: 50,
       departmentId: '',
@@ -89,239 +92,241 @@ const CourseForm = ({ onSubmit, setOpen }) => {
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div className="grid gap-4 py-4">
+        {/* Course Name */}
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="courseName" className="text-right">
+          <Label htmlFor="courseName" className="col-span-1 text-right">
             Назва
           </Label>
-          <Controller
-            control={control}
-            name="courseName"
-            render={({ field }) => (
-              <>
-                <Input id="courseName" {...field} className="col-span-3" />
-                {errors.courseName && (
-                  <p className="text-red-500 text-sm col-span-3">
-                    {errors.courseName.message}
+          <div className="col-span-3">
+            <Controller
+              control={control}
+              name="courseName"
+              render={({ field }) => (
+                <>
+                  <Input id="courseName" {...field} className="w-full" />
+                  <p className="text-red-500 text-sm mt-1 h-5">
+                    {errors.courseName ? errors.courseName.message : ''}
                   </p>
-                )}
-              </>
-            )}
-          />
+                </>
+              )}
+            />
+          </div>
         </div>
+
+        {/* Course Type */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="courseType" className="text-right">
             Тип
           </Label>
-          <Controller
-            control={control}
-            name="courseType"
-            render={({ field }) => (
-              <>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Выберите тип" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Стажування">Cтажування</SelectItem>
-                    <SelectItem value="Спеціалізація">Спеціалізація</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.courseType && (
-                  <p className="text-red-500 text-sm">
-                    {errors.courseType.message}
+          <div className="col-span-3">
+            <Controller
+              control={control}
+              name="courseType"
+              render={({ field }) => (
+                <>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Выберите тип" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Стажування">Стажування</SelectItem>
+                      <SelectItem value="Спеціалізація">
+                        Спеціалізація
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-red-500 text-sm mt-1 h-5">
+                    {errors.courseType ? errors.courseType.message : ''}
                   </p>
-                )}
-              </>
-            )}
-          />
+                </>
+              )}
+            />
+          </div>
         </div>
+
+        {/* Course Price */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="coursePrice" className="text-right">
             Ціна
           </Label>
-          <Controller
-            control={control}
-            name="coursePrice"
-            render={({ field }) => (
-              <>
-                <Input
-                  id="coursePrice"
-                  type="number"
-                  step={100}
-                  {...field}
-                  className="col-span-3"
-                />
-                {errors.coursePrice && (
-                  <p className="text-red-500 text-sm">
-                    {errors.coursePrice.message}
+          <div className="col-span-3">
+            <Controller
+              control={control}
+              name="coursePrice"
+              render={({ field }) => (
+                <>
+                  <Input
+                    id="coursePrice"
+                    type="number"
+                    step={100}
+                    min={0}
+                    max={100000}
+                    {...field}
+                    className="w-full"
+                  />
+                  <p className="text-red-500 text-sm mt-1 h-5">
+                    {errors.coursePrice ? errors.coursePrice.message : ''}
                   </p>
-                )}
-              </>
-            )}
-          />
+                </>
+              )}
+            />
+          </div>
         </div>
+
+        {/* Course Points */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="coursePoints" className="text-right">
             Бали
           </Label>
-          <Controller
-            control={control}
-            name="coursePoints"
-            render={({ field }) => (
-              <>
-                <Input
-                  id="coursePoints"
-                  type="number"
-                  {...field}
-                  className="col-span-3"
-                />
-                {errors.coursePoints && (
-                  <p className="text-red-500 text-sm col-span-3">
-                    {errors.coursePoints.message}
+          <div className="col-span-3">
+            <Controller
+              control={control}
+              name="coursePoints"
+              render={({ field }) => (
+                <>
+                  <Input
+                    id="coursePoints"
+                    type="number"
+                    {...field}
+                    className="w-full"
+                  />
+                  <p className="text-red-500 text-sm mt-1 h-5">
+                    {errors.coursePoints ? errors.coursePoints.message : ''}
                   </p>
-                )}
-              </>
-            )}
-          />
+                </>
+              )}
+            />
+          </div>
         </div>
+
+        {/* Department */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="departmentId" className="text-right">
             Кафедра
           </Label>
-          <Controller
-            control={control}
-            name="departmentId"
-            render={({ field }) => (
-              <>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Выберите кафедру" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {departments.map((department) => (
-                      <SelectItem key={department.id} value={department.id}>
-                        {department.departmentName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.departmentId && (
-                  <p className="text-red-500 text-sm">
-                    {errors.departmentId.message}
+          <div className="col-span-3">
+            <Controller
+              control={control}
+              name="departmentId"
+              render={({ field }) => (
+                <>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Выберите кафедру" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {departments.map((department) => (
+                        <SelectItem key={department.id} value={department.id}>
+                          {department.departmentName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-red-500 text-sm mt-1 h-5">
+                    {errors.departmentId ? errors.departmentId.message : ''}
                   </p>
-                )}
-              </>
-            )}
-          />
+                </>
+              )}
+            />
+          </div>
         </div>
+
+        {/* Start Date */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="courseDateStart" className="text-right">
             Початок
           </Label>
-          <Controller
-            control={control}
-            name="courseDateStart"
-            render={({ field }) => (
-              <>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        ' justify-start text-left font-normal  col-span-3', // Класс w-full для растягивания на всю ширину
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      <CalendarIcon />
-                      {field.value ? (
-                        format(field.value, 'PPP')
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={(date) => {
-                        // Проверка, что `date` определен и отличается от текущего значения
-                        if (
-                          date &&
-                          format(date, 'yyyy-MM-dd') !== field.value
-                        ) {
-                          field.onChange(format(date, 'yyyy-MM-dd'));
+          <div className="col-span-3">
+            <Controller
+              control={control}
+              name="courseDateStart"
+              render={({ field }) => (
+                <>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                      >
+                        <CalendarIcon />
+                        {field.value
+                          ? format(new Date(field.value), 'PPP')
+                          : 'Pick a date'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={
+                          field.value ? new Date(field.value) : undefined
                         }
-                      }}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                {errors.courseDateStart && (
-                  <p className="text-red-500 text-sm">
-                    {errors.courseDateStart.message}
+                        onSelect={(date) =>
+                          date && field.onChange(format(date, 'yyyy-MM-dd'))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <p className="text-red-500 text-sm mt-1 h-5">
+                    {errors.courseDateStart
+                      ? errors.courseDateStart.message
+                      : ''}
                   </p>
-                )}
-              </>
-            )}
-          />
+                </>
+              )}
+            />
+          </div>
         </div>
+
+        {/* End Date */}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="courseDateEnd" className="text-right">
             Закінчення
           </Label>
-          <Controller
-            control={control}
-            name="courseDateEnd"
-            render={({ field }) => (
-              <>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        ' justify-start text-left font-normal  col-span-3', // Класс w-full для растягивания на всю ширину
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      <CalendarIcon />
-                      {field.value ? (
-                        format(field.value, 'PPP')
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={(date) => {
-                        // Проверка, что `date` определен и отличается от текущего значения
-                        if (
-                          date &&
-                          format(date, 'yyyy-MM-dd') !== field.value
-                        ) {
-                          field.onChange(format(date, 'yyyy-MM-dd'));
+          <div className="col-span-3">
+            <Controller
+              control={control}
+              name="courseDateEnd"
+              render={({ field }) => (
+                <>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                      >
+                        <CalendarIcon />
+                        {field.value
+                          ? format(new Date(field.value), 'PPP')
+                          : 'Pick a date'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={
+                          field.value ? new Date(field.value) : undefined
                         }
-                      }}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                {errors.courseDateEnd && (
-                  <p className="text-red-500 text-sm">
-                    {errors.courseDateEnd.message}
+                        onSelect={(date) =>
+                          date && field.onChange(format(date, 'yyyy-MM-dd'))
+                        }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <p className="text-red-500 text-sm mt-1 h-5">
+                    {errors.courseDateEnd ? errors.courseDateEnd.message : ''}
                   </p>
-                )}
-              </>
-            )}
-          />
+                </>
+              )}
+            />
+          </div>
         </div>
       </div>
-      <div className="flex justify-end">
-        <Button type="submit">Сохранить</Button>
-      </div>
+
+      <Button type="submit" className="w-full text-cyan-50">
+        Сохранить
+      </Button>
     </form>
   );
 };
