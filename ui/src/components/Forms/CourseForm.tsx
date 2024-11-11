@@ -183,7 +183,12 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                   <Calendar
                     mode="single"
                     selected={field.value}
-                    onSelect={field.onChange}
+                    onSelect={(date) => {
+                      // Проверка, что `date` определен и отличается от текущего значения
+                      if (date && format(date, 'yyyy-MM-dd') !== field.value) {
+                        field.onChange(format(date, 'yyyy-MM-dd'));
+                      }
+                    }}
                     initialFocus
                   />
                 </PopoverContent>
