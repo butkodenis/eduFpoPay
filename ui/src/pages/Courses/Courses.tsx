@@ -116,7 +116,7 @@ const Courses = () => {
                       Додати курс
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[600px]">
+                  <DialogContent className="sm:max-w-[680px]">
                     <DialogHeader>
                       <DialogTitle>Додати курс</DialogTitle>
                       <DialogDescription>
