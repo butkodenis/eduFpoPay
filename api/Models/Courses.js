@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../Utilites/dbConfig');
+const Departments = require('./Departments');
 
 const Courses = sequelize.define(
   'Courses',
@@ -21,8 +22,12 @@ const Courses = sequelize.define(
     coursePoints: {
       type: DataTypes.INTEGER,
     },
-    courseDepartment: {
-      type: DataTypes.STRING,
+    departmentId: {
+      type: DataTypes.UUID,
+      references: {
+        model: Departments,
+        key: 'id',
+      },
     },
     courseDateStart: {
       type: DataTypes.DATEONLY,
@@ -36,5 +41,10 @@ const Courses = sequelize.define(
     timestamps: false,
   }
 );
+
+Courses.belongsTo(Departments, {
+  foreignKey: 'departmentId',
+  as: 'department',
+});
 
 module.exports = Courses;
