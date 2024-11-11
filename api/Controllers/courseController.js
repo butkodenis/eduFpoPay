@@ -9,7 +9,7 @@ class CourseController {
         courseName,
         coursePrice,
         coursePoints,
-        courseDepartment,
+        departmentId,
         courseDateStart,
         courseDateEnd,
       } = req.body;
@@ -19,7 +19,7 @@ class CourseController {
         where: {
           courseName,
           courseType,
-          courseDepartment,
+          departmentId,
           coursePrice,
         },
       });
@@ -35,7 +35,7 @@ class CourseController {
         courseName,
         coursePrice,
         coursePoints,
-        courseDepartment,
+        departmentId,
         courseDateStart,
         courseDateEnd,
       });
@@ -51,8 +51,30 @@ class CourseController {
 
   async getCourses(req, res) {
     try {
-      const courses = await Courses.findAll();
-      res.status(200).json({ courses });
+      const courses = await Courses.findAll({
+        include: [
+          {
+            model: Departments,
+            as: 'department',
+            attributes: ['departmentName'],
+          },
+        ],
+      });
+
+      const coursesData = courses.map((course) => {
+        return {
+          id: course.id,
+          courseType: course.courseType,
+          courseName: course.courseName,
+          coursePrice: course.coursePrice,
+          coursePoints: course.coursePoints,
+          department: course.department.departmentName,
+          courseDateStart: course.courseDateStart,
+          courseDateEnd: course.courseDateEnd,
+        };
+      });
+
+      res.status(200).json({ courses: coursesData });
     } catch (e) {
       res.status(400).json(e);
     }
