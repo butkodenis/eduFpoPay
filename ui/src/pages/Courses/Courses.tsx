@@ -62,7 +62,7 @@ const Courses = () => {
     { accessorKey: 'courseType', header: 'Тип' },
     { accessorKey: 'coursePrice', header: 'Цена' },
     { accessorKey: 'coursePoints', header: 'Баллы' },
-    { accessorKey: 'courseDepartment', header: 'Кафедра' },
+    { accessorKey: 'department', header: 'Кафедра' },
     {
       accessorKey: 'courseDateStart',
       header: 'Начало',

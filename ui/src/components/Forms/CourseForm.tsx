@@ -33,7 +33,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
       courseType: '',
       coursePrice: 0,
       coursePoints: 50,
-      courseDepartment: '',
+      departmentId: '',
       courseDateStart: '',
       courseDateEnd: '',
     },
@@ -132,12 +132,12 @@ const CourseForm = ({ onSubmit, setOpen }) => {
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="courseDepartment" className="text-right">
+          <Label htmlFor="departmentId" className="text-right">
             Кафедра
           </Label>
           <Controller
             control={control}
-            name="courseDepartment"
+            name="departmentId"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger className="col-span-3">
