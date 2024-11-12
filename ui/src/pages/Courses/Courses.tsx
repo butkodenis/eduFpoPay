@@ -39,21 +39,21 @@ const Courses = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/courses/all`
-        );
-        setCourses(response.data.courses);
-      } catch (error) {
-        console.error('Ошибка загрузки курсов:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchCourses = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/courses/all`
+      );
+      setCourses(response.data.courses);
+    } catch (error) {
+      console.error('Ошибка загрузки курсов:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchCourses();
   }, []);
 
@@ -81,10 +81,14 @@ const Courses = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/api/courses/create`,
+      data
+    );
     console.log('Данные формы:', data);
-
     setOpen(false); // Закрытие модального окна
+    fetchCourses(); // перезагрузка таблицы
   };
 
   return (

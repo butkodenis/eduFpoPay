@@ -65,18 +65,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
   }, []);
 
   const handleFormSubmit = async (data) => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/courses/create`,
-        data
-      );
-      reset();
-      setOpen(false);
-      onSubmit();
-      console.log('Ответ сервера:', response.data);
-    } catch (error) {
-      console.error('Ошибка отправки формы:', error);
-    }
+    await onSubmit(data);
   };
 
   return (
