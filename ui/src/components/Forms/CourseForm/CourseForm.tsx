@@ -19,9 +19,10 @@ import {
 } from '@/components/ui/select';
 
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Save } from 'lucide-react';
 
 import { Calendar } from '@/components/ui/calendar';
+
 import {
   Popover,
   PopoverContent,
@@ -105,7 +106,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                 <>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Выберите тип" />
+                      <SelectValue placeholder="Оберіть тип" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Стажування">Стажування</SelectItem>
@@ -195,7 +196,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                 <>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Выберите кафедру" />
+                      <SelectValue placeholder="Оберіть кафедру" />
                     </SelectTrigger>
                     <SelectContent>
                       {departments.map((department) => (
@@ -312,6 +313,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
       </div>
 
       <Button type="submit" className="w-full text-cyan-50">
+        <Save />
         Сохранить
       </Button>
     </form>
