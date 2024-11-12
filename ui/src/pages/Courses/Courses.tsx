@@ -110,7 +110,7 @@ const Courses = () => {
               </div>
               <div className="flex items-center py-4 ml-auto">
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger>
+                  <DialogTrigger asChild>
                     <Button>
                       <SquarePlus />
                       Додати курс
