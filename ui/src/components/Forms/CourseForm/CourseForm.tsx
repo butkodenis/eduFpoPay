@@ -151,7 +151,8 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                     min={0}
                     max={100000}
                     step={100}
-                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))} // Преобразуем строку в число
+                    value={field.value}
                     className="w-full"
                   />
                   <p className="text-red-500 text-sm mt-1 h-5">
@@ -179,7 +180,8 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                     type="number"
                     min={0}
                     max={100}
-                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))} // Преобразуем строку в число
+                    value={field.value}
                     className="w-full"
                   />
                   <p className="text-red-500 text-sm mt-1 h-5">
