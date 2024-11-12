@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useCourses } from '@/hooks/useCourses';
 
 import {
   Table,
@@ -23,8 +24,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import axios from 'axios';
-
 import {
   useReactTable,
   getCoreRowModel,
@@ -35,27 +34,8 @@ import { PaginationRow } from '@/components/Pagination/Pagination';
 import CourseForm from '@/components/Forms/CourseForm/CourseForm';
 
 const Courses = () => {
-  const [courses, setCourses] = useState([]);
+  const { courses, isLoading, mutate } = useCourses();
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/courses/all`
-        );
-        setCourses(response.data.courses);
-      } catch (error) {
-        console.error('Ошибка загрузки курсов:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, []);
 
   const columns = [
     { accessorKey: 'courseName', header: 'Название' },
@@ -81,9 +61,8 @@ const Courses = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const onSubmit = (data) => {
-    console.log('Данные формы:', data);
-
+  const onSubmit = async () => {
+    await mutate(); // Обновление списка курсов после добавления
     setOpen(false); // Закрытие модального окна
   };
 
@@ -123,7 +102,7 @@ const Courses = () => {
                         Введіть інформацію про курс та натисніть "Додати"
                       </DialogDescription>
                     </DialogHeader>
-                    <CourseForm onSubmit={onSubmit} setOpen={setOpen} />
+                    <CourseForm onSubmit={onSubmit} />
                   </DialogContent>
                 </Dialog>
               </div>

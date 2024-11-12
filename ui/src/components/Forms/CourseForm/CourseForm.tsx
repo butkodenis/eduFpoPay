@@ -1,7 +1,7 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import courseSchema from './courseValidationSchema';
-import axios from 'axios';
+import { useDepartments, useCreateCourse } from '@/hooks/useCourses';
 
 import { uk } from 'date-fns/locale';
 import { useState, useEffect } from 'react';
@@ -28,8 +28,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-const CourseForm = ({ onSubmit, setOpen }) => {
-  const [departments, setDepartments] = useState([]);
+const CourseForm = ({ onSubmit }) => {
+  const { departments, isLoading: isLoadingDepartments } = useDepartments();
+  const createCourse = useCreateCourse(); // Функция для создания курса
 
   const {
     handleSubmit,
@@ -49,33 +50,13 @@ const CourseForm = ({ onSubmit, setOpen }) => {
     },
   });
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/departments/all`
-        );
-        setDepartments(response.data.departments);
-      } catch (error) {
-        console.error('Error fetching departments:', error);
-      }
-    };
-
-    fetchDepartments();
-  }, []);
-
   const handleFormSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/courses/create`,
-        data
-      );
+      await createCourse(data); // Создаём новый курс через SWR
       reset();
-      setOpen(false);
-      onSubmit();
-      console.log('Ответ сервера:', response.data);
+      onSubmit(); // Вызов onSubmit для закрытия модального окна или выполнения других действий
     } catch (error) {
-      console.error('Ошибка отправки формы:', error);
+      console.error('Ошибка при создании курса:', error);
     }
   };
 
