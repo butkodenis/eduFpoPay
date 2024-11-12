@@ -1,7 +1,9 @@
 import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import courseSchema from './courseValidationSchema';
 import axios from 'axios';
+
+import { uk } from 'date-fns/locale';
 import { useState, useEffect } from 'react';
 
 import { Input } from '@/components/ui/input';
@@ -25,27 +27,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-
-const courseSchema = z.object({
-  courseName: z
-    .string()
-    .min(2, 'Назва курса должна содержать минимум 2 символа'),
-  courseType: z
-    .enum(['Стажування', 'Спеціалізація'])
-    .nonempty('Выберите тип курса'),
-  coursePrice: z
-    .number()
-    .positive('Цена должна быть положительным числом')
-    .max(100000, 'Цена не может превышать 100 000'),
-  coursePoints: z
-    .number()
-    .min(1, 'Бали не могут быть меньше 1')
-    .max(100, 'Бали не могут превышать 100'),
-  departmentId: z.string().nonempty('Выберите кафедру'),
-  courseDateStart: z.string().nonempty('Выберите дату начала курса'),
-  courseDateEnd: z.string().nonempty('Выберите дату окончания курса'),
-});
 
 const CourseForm = ({ onSubmit, setOpen }) => {
   const [departments, setDepartments] = useState([]);
@@ -59,7 +40,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
     resolver: zodResolver(courseSchema),
     defaultValues: {
       courseName: '',
-      courseType: undefined,
+      courseType: '',
       coursePrice: 0,
       coursePoints: 50,
       departmentId: '',
@@ -83,10 +64,19 @@ const CourseForm = ({ onSubmit, setOpen }) => {
     fetchDepartments();
   }, []);
 
-  const handleFormSubmit = (data) => {
-    onSubmit(data);
-    reset();
-    setOpen(false);
+  const handleFormSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/courses/create`,
+        data
+      );
+      reset();
+      setOpen(false);
+      onSubmit();
+      console.log('Ответ сервера:', response.data);
+    } catch (error) {
+      console.error('Ошибка отправки формы:', error);
+    }
   };
 
   return (
@@ -158,9 +148,9 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                   <Input
                     id="coursePrice"
                     type="number"
-                    step={100}
                     min={0}
                     max={100000}
+                    step={100}
                     {...field}
                     className="w-full"
                   />
@@ -187,6 +177,8 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                   <Input
                     id="coursePoints"
                     type="number"
+                    min={0}
+                    max={100}
                     {...field}
                     className="w-full"
                   />
@@ -250,8 +242,10 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                       >
                         <CalendarIcon />
                         {field.value
-                          ? format(new Date(field.value), 'PPP')
-                          : 'Pick a date'}
+                          ? format(new Date(field.value), 'yyyy-MM-dd', {
+                              locale: uk,
+                            })
+                          : 'Оберіть дату'}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -264,6 +258,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                           date && field.onChange(format(date, 'yyyy-MM-dd'))
                         }
                         initialFocus
+                        locale={uk}
                       />
                     </PopoverContent>
                   </Popover>
@@ -297,8 +292,8 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                       >
                         <CalendarIcon />
                         {field.value
-                          ? format(new Date(field.value), 'PPP')
-                          : 'Pick a date'}
+                          ? format(new Date(field.value), 'yyyy-MM-dd')
+                          : 'Оберіть дату'}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
@@ -311,6 +306,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
                           date && field.onChange(format(date, 'yyyy-MM-dd'))
                         }
                         initialFocus
+                        locale={uk}
                       />
                     </PopoverContent>
                   </Popover>

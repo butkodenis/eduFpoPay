@@ -32,7 +32,7 @@ import {
 } from '@tanstack/react-table';
 
 import { PaginationRow } from '@/components/Pagination/Pagination';
-import CourseForm from '@/components/Forms/CourseForm';
+import CourseForm from '@/components/Forms/CourseForm/CourseForm';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
