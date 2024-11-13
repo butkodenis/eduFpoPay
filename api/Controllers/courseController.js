@@ -1,5 +1,6 @@
 const Courses = require('../Models/Courses');
 const Departments = require('../Models/Departments');
+const { Op } = require('sequelize');
 
 class CourseController {
   async createCourse(req, res) {
@@ -48,15 +49,25 @@ class CourseController {
       res.status(500).json({ message: error.message });
     }
   }
-
   async getCourses(req, res) {
     try {
       const page = parseInt(req.query.page, 10) || 1;
       const limit = parseInt(req.query.limit, 10) || 10;
       const offset = (page - 1) * limit;
+      const { courseName } = req.query;
+
+      const whereClause = {};
+
+      // Добавляем условие фильтрации по имени курса, если оно передано
+      if (courseName) {
+        whereClause.courseName = {
+          [Op.iLike]: `%${courseName}%`, // Используем iLike для поиска без учета регистра
+        };
+      }
 
       const { rows: courses, count: totalCourses } =
         await Courses.findAndCountAll({
+          where: whereClause,
           include: [
             {
               model: Departments,
