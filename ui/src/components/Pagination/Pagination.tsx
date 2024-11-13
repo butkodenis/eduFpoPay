@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { ChevronRight, ChevronLeft, SquarePlus, Filter } from 'lucide-react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 
 export function PaginationRow() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);

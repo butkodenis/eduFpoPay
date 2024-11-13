@@ -1,17 +1,42 @@
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
 
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { SquarePlus, Filter } from 'lucide-react';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 import {
   Dialog,
@@ -31,21 +56,27 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 
-import { PaginationRow } from '@/components/Pagination/Pagination';
 import CourseForm from '@/components/Forms/CourseForm/CourseForm';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const fetchCourses = async () => {
+  const fetchCourses = async (page = 1) => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/courses/all`
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/api/courses/all?page=${page}&limit=${rowsPerPage}`
       );
       setCourses(response.data.courses);
+      setCurrentPage(response.data.currentPage);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Ошибка загрузки курсов:', error);
     } finally {
@@ -54,8 +85,8 @@ const Courses = () => {
   };
 
   useEffect(() => {
-    fetchCourses();
-  }, []);
+    fetchCourses(currentPage);
+  }, [currentPage, rowsPerPage]);
 
   const columns = [
     { accessorKey: 'courseName', header: 'Название' },
@@ -66,12 +97,12 @@ const Courses = () => {
     {
       accessorKey: 'courseDateStart',
       header: 'Начало',
-      cell: (info) => new Date(info.getValue()).toLocaleDateString(),
+      cell: (info) => format(new Date(info.getValue()), 'yyyy.MM.dd'),
     },
     {
       accessorKey: 'courseDateEnd',
       header: 'Окончание',
-      cell: (info) => new Date(info.getValue()).toLocaleDateString(),
+      cell: (info) => format(new Date(info.getValue()), 'yyyy.MM.dd'),
     },
   ];
 
@@ -88,7 +119,7 @@ const Courses = () => {
     );
     console.log('Данные формы:', data);
     setOpen(false); // Закрытие модального окна
-    fetchCourses(); // перезагрузка таблицы
+    fetchCourses(currentPage); // перезагрузка таблицы
   };
 
   return (
@@ -172,7 +203,62 @@ const Courses = () => {
                 )}
               </TableBody>
             </Table>
-            <PaginationRow />
+
+            {/* Pagination */}
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft />
+                    </PaginationPrevious>
+                  </PaginationItem>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <PaginationItem key={index}>
+                      <PaginationLink
+                        href="#"
+                        isActive={currentPage === index + 1}
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      <ChevronRight />
+                    </PaginationNext>
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+              <Select
+                value={rowsPerPage}
+                onValueChange={(value: string) => setRowsPerPage(Number(value))}
+              >
+                <SelectTrigger className="w-[80px]">
+                  <SelectValue placeholder={`${rowsPerPage} rows per page`} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Рядків на сторінці</SelectLabel>
+                    <SelectItem value={5}>5</SelectItem>
+                    <SelectItem value={10}>10</SelectItem>
+                    <SelectItem value={15}>15</SelectItem>
+                    <SelectItem value={20}>20</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </div>
