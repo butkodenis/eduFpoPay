@@ -51,15 +51,23 @@ class CourseController {
 
   async getCourses(req, res) {
     try {
-      const courses = await Courses.findAll({
-        include: [
-          {
-            model: Departments,
-            as: 'department',
-            attributes: ['departmentName'],
-          },
-        ],
-      });
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 10;
+      const offset = (page - 1) * limit;
+
+      const { rows: courses, count: totalCourses } =
+        await Courses.findAndCountAll({
+          include: [
+            {
+              model: Departments,
+              as: 'department',
+              attributes: ['departmentName'],
+            },
+          ],
+          order: [['courseDateStart', 'ASC']],
+          limit,
+          offset,
+        });
 
       const coursesData = courses.map((course) => {
         return {
@@ -74,9 +82,14 @@ class CourseController {
         };
       });
 
-      res.status(200).json({ courses: coursesData });
-    } catch (e) {
-      res.status(400).json(e);
+      res.status(200).json({
+        courses: coursesData,
+        currentPage: page,
+        totalPages: Math.ceil(totalCourses / limit),
+        totalCourses,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
     }
   }
 }
