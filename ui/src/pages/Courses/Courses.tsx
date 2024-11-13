@@ -65,6 +65,7 @@ const Courses = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalCourses, setTotalCourses] = useState<number>(0);
 
   const fetchCourses = async (page = 1) => {
     try {
@@ -77,6 +78,7 @@ const Courses = () => {
       setCourses(response.data.courses);
       setCurrentPage(response.data.currentPage);
       setTotalPages(response.data.totalPages);
+      setTotalCourses(response.data.totalCourses);
     } catch (error) {
       console.error('Ошибка загрузки курсов:', error);
     } finally {
@@ -127,7 +129,9 @@ const Courses = () => {
       <div className="flex flex-wrap -mx-2">
         <div className="w-full px-2 mb-2">
           <div className="p-1 shadow rounded border border-slate-300">
-            <h5 className="text-xl font-bold mb-1">Курси ({courses.length})</h5>
+            <h5 className="text-xl font-bold mb-1">
+              Всього Курсів: {totalCourses}
+            </h5>
           </div>
         </div>
         <div className="w-full px-2 mb-2">
@@ -218,17 +222,50 @@ const Courses = () => {
                       <ChevronLeft />
                     </PaginationPrevious>
                   </PaginationItem>
-                  {[...Array(totalPages)].map((_, index) => (
-                    <PaginationItem key={index}>
-                      <PaginationLink
-                        href="#"
-                        isActive={currentPage === index + 1}
-                        onClick={() => setCurrentPage(index + 1)}
-                      >
-                        {index + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
+
+                  {currentPage > 3 && (
+                    <>
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => setCurrentPage(1)}
+                        >
+                          1
+                        </PaginationLink>
+                      </PaginationItem>
+                      <PaginationEllipsis />
+                    </>
+                  )}
+
+                  {Array.from({ length: 5 })
+                    .map((_, index) => currentPage - 2 + index)
+                    .filter((page) => page > 0 && page <= totalPages)
+                    .map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          isActive={currentPage === page}
+                          onClick={() => setCurrentPage(page)}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                  {currentPage < totalPages - 2 && (
+                    <>
+                      <PaginationEllipsis />
+                      <PaginationItem>
+                        <PaginationLink
+                          href="#"
+                          onClick={() => setCurrentPage(totalPages)}
+                        >
+                          {totalPages}
+                        </PaginationLink>
+                      </PaginationItem>
+                    </>
+                  )}
+
                   <PaginationItem>
                     <PaginationNext
                       onClick={() =>
