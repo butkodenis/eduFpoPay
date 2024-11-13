@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table';
 
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { SquarePlus, Filter } from 'lucide-react';
+import { SquarePlus, Filter, X } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -66,14 +66,20 @@ const Courses = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalCourses, setTotalCourses] = useState<number>(0);
+  const [courseFilter, setCourseFilter] = useState<string>('');
 
   const fetchCourses = async (page = 1) => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `${
-          import.meta.env.VITE_BASE_URL
-        }/api/courses/all?page=${page}&limit=${rowsPerPage}`
+        `${import.meta.env.VITE_BASE_URL}/api/courses/all`,
+        {
+          params: {
+            page,
+            limit: rowsPerPage,
+            courseName: courseFilter,
+          },
+        }
       );
       setCourses(response.data.courses);
       setCurrentPage(response.data.currentPage);
@@ -89,6 +95,21 @@ const Courses = () => {
   useEffect(() => {
     fetchCourses(currentPage);
   }, [currentPage, rowsPerPage]);
+
+  const handleFilterChenge = (event) => {
+    setCourseFilter(event.target.value);
+  };
+
+  const handleFilterSubmit = () => {
+    fetchCourses(1);
+  };
+
+  const handleFilterReset = () => {
+    setCourseFilter('');
+    setCurrentPage(1); // Сбросить текущую страницу на первую
+
+    fetchCourses(1);
+  };
 
   const columns = [
     { accessorKey: 'courseName', header: 'Название' },
@@ -138,13 +159,24 @@ const Courses = () => {
           <div className="p-1 shadow rounded border border-slate-300">
             <div className="flex flex-row px-2 mb-2 gap-4">
               <div className="flex items-center py-4">
-                <Input placeholder="фільтр по назві..." className="max-w-sm" />
+                <Input
+                  placeholder="фільтр по назві..."
+                  className="max-w-sm"
+                  value={courseFilter}
+                  onChange={handleFilterChenge}
+                />
               </div>
 
               <div className="flex items-center py-4">
-                <Button variant="outline">
+                <Button variant="outline" onClick={handleFilterSubmit}>
                   <Filter />
                   Пошук
+                </Button>
+              </div>
+              <div className="flex items-center py-4">
+                <Button variant="outline" onClick={handleFilterReset}>
+                  <X />
+                  Сброс
                 </Button>
               </div>
               <div className="flex items-center py-4 ml-auto">
