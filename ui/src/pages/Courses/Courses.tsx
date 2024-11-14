@@ -94,21 +94,10 @@ const Courses = () => {
 
   useEffect(() => {
     fetchCourses(currentPage);
-  }, [currentPage, rowsPerPage]);
+  }, [currentPage, rowsPerPage, courseFilter]);
 
   const handleFilterChenge = (event) => {
     setCourseFilter(event.target.value);
-  };
-
-  const handleFilterSubmit = () => {
-    fetchCourses(1);
-  };
-
-  const handleFilterReset = () => {
-    setCourseFilter('');
-    setCurrentPage(1); // Сбросить текущую страницу на первую
-
-    fetchCourses(1);
   };
 
   const columns = [
@@ -167,18 +156,6 @@ const Courses = () => {
                 />
               </div>
 
-              <div className="flex items-center py-4">
-                <Button variant="outline" onClick={handleFilterSubmit}>
-                  <Filter />
-                  Пошук
-                </Button>
-              </div>
-              <div className="flex items-center py-4">
-                <Button variant="outline" onClick={handleFilterReset}>
-                  <X />
-                  Сброс
-                </Button>
-              </div>
               <div className="flex items-center py-4 ml-auto">
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
