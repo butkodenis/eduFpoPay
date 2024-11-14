@@ -1,32 +1,20 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { Link } from 'react-router-dom';
 
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
 
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { SquarePlus, Filter, X } from 'lucide-react';
+import { SquarePlus } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
 
 import {
   Select,
@@ -42,7 +30,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -96,7 +83,7 @@ const Courses = () => {
     fetchCourses(currentPage);
   }, [currentPage, rowsPerPage, courseFilter]);
 
-  const handleFilterChenge = (event) => {
+  const handleFilterChenge = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCourseFilter(event.target.value); // Обновляем фильтр
     setCurrentPage(1); // Сбрасываем страницу на первую
     setCourses([]); // Очищаем текущие данные курсов
@@ -111,12 +98,14 @@ const Courses = () => {
     {
       accessorKey: 'courseDateStart',
       header: 'Начало',
-      cell: (info) => format(new Date(info.getValue()), 'yyyy.MM.dd'),
+      cell: (info: { getValue: () => string | Date }) =>
+        format(new Date(info.getValue()), 'yyyy.MM.dd'),
     },
     {
       accessorKey: 'courseDateEnd',
       header: 'Окончание',
-      cell: (info) => format(new Date(info.getValue()), 'yyyy.MM.dd'),
+      cell: (info: { getValue: () => string | Date }) =>
+        format(new Date(info.getValue()), 'yyyy.MM.dd'),
     },
   ];
 
@@ -126,7 +115,17 @@ const Courses = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const onSubmit = async (data) => {
+  interface CourseFormValues {
+    courseName: string;
+    courseType: string;
+    coursePrice: number;
+    coursePoints: number;
+    department: string;
+    courseDateStart: string;
+    courseDateEnd: string;
+  }
+
+  const onSubmit = async (data: CourseFormValues) => {
     await axios.post(
       `${import.meta.env.VITE_BASE_URL}/api/courses/create`,
       data
@@ -255,21 +254,20 @@ const Courses = () => {
 
               {/* Выбор количества строк на странице */}
               <Select
-                value={rowsPerPage}
-                onValueChange={(value: string) => setRowsPerPage(Number(value))}
+                value={String(rowsPerPage)} // Преобразуем rowsPerPage в строку для Select
+                onValueChange={(value) => setRowsPerPage(Number(value))} // Преобразуем value в число
               >
                 <SelectTrigger className="w-[80px]">
-                  <SelectValue
-                    placeholder={`${rowsPerPage} строк на странице`}
-                  />
+                  <SelectValue placeholder={`${rowsPerPage} на сторінці`} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Строк на странице</SelectLabel>
-                    <SelectItem value={5}>5</SelectItem>
-                    <SelectItem value={10}>10</SelectItem>
-                    <SelectItem value={15}>15</SelectItem>
-                    <SelectItem value={20}>20</SelectItem>
+                    <SelectLabel>Рядків на сторінці</SelectLabel>
+                    <SelectItem value="5">5</SelectItem>{' '}
+                    {/* Значения как строки */}
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="15">15</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
