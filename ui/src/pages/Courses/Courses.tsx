@@ -97,7 +97,9 @@ const Courses = () => {
   }, [currentPage, rowsPerPage, courseFilter]);
 
   const handleFilterChenge = (event) => {
-    setCourseFilter(event.target.value);
+    setCourseFilter(event.target.value); // Обновляем фильтр
+    setCurrentPage(1); // Сбрасываем страницу на первую
+    setCourses([]); // Очищаем текущие данные курсов
   };
 
   const columns = [
@@ -218,85 +220,52 @@ const Courses = () => {
             </Table>
 
             {/* Pagination */}
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.max(prev - 1, 1))
-                      }
-                      disabled={currentPage === 1}
-                    >
-                      <ChevronLeft />
-                    </PaginationPrevious>
-                  </PaginationItem>
+            <div className="flex items-center justify-between py-4">
+              {/* Кнопки Назад и Вперед */}
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft />
+                </Button>
 
-                  {currentPage > 3 && (
-                    <>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#"
-                          onClick={() => setCurrentPage(1)}
-                        >
-                          1
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationEllipsis />
-                    </>
-                  )}
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight />
+                </Button>
+              </div>
 
-                  {Array.from({ length: 5 })
-                    .map((_, index) => currentPage - 2 + index)
-                    .filter((page) => page > 0 && page <= totalPages)
-                    .map((page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          href="#"
-                          isActive={currentPage === page}
-                          onClick={() => setCurrentPage(page)}
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
+              {/* Информация о текущей странице */}
+              <div className="flex items-center space-x-2 text-sm">
+                <span>
+                  {(currentPage - 1) * rowsPerPage + 1}–{' '}
+                  {Math.min(currentPage * rowsPerPage, totalCourses)} из{' '}
+                  {totalCourses}
+                </span>
+              </div>
 
-                  {currentPage < totalPages - 2 && (
-                    <>
-                      <PaginationEllipsis />
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#"
-                          onClick={() => setCurrentPage(totalPages)}
-                        >
-                          {totalPages}
-                        </PaginationLink>
-                      </PaginationItem>
-                    </>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                      }
-                      disabled={currentPage === totalPages}
-                    >
-                      <ChevronRight />
-                    </PaginationNext>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              {/* Выбор количества строк на странице */}
               <Select
                 value={rowsPerPage}
                 onValueChange={(value: string) => setRowsPerPage(Number(value))}
               >
                 <SelectTrigger className="w-[80px]">
-                  <SelectValue placeholder={`${rowsPerPage} rows per page`} />
+                  <SelectValue
+                    placeholder={`${rowsPerPage} строк на странице`}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectLabel>Рядків на сторінці</SelectLabel>
+                    <SelectLabel>Строк на странице</SelectLabel>
                     <SelectItem value={5}>5</SelectItem>
                     <SelectItem value={10}>10</SelectItem>
                     <SelectItem value={15}>15</SelectItem>
