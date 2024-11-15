@@ -72,7 +72,7 @@ class CourseController {
             {
               model: Departments,
               as: 'department',
-              attributes: ['departmentName'],
+              attributes: ['id', 'departmentName'],
             },
           ],
           order: [['courseDateStart', 'ASC']],
@@ -87,7 +87,10 @@ class CourseController {
           courseName: course.courseName,
           coursePrice: course.coursePrice,
           coursePoints: course.coursePoints,
-          department: course.department.departmentName,
+          department: {
+            id: course.department.id, // ID кафедры
+            departmentName: course.department.departmentName, // Название кафедры
+          },
           courseDateStart: course.courseDateStart,
           courseDateEnd: course.courseDateEnd,
         };
