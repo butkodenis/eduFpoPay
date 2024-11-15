@@ -98,7 +98,11 @@ const Courses = () => {
     { accessorKey: 'courseType', header: 'Тип' },
     { accessorKey: 'coursePrice', header: 'Вартість' },
     { accessorKey: 'coursePoints', header: 'Бали' },
-    { accessorKey: 'department', header: 'Кафедра' },
+    {
+      accessorKey: 'department',
+      header: 'Кафедра',
+      cell: (info) => info.getValue().departmentName,
+    },
     {
       accessorKey: 'courseDateStart',
       header: 'Початок',
