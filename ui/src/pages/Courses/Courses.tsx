@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
-import { SquarePlus } from 'lucide-react';
+import { SquarePlus, MoreHorizontal, Trash2, Pen } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 import axios from 'axios';
 
@@ -84,6 +91,29 @@ const Courses = () => {
       header: 'Закінчення',
       cell: (info: { getValue: () => string | Date }) =>
         format(new Date(info.getValue()), 'yyyy.MM.dd'),
+    },
+    {
+      accessorKey: 'actions',
+      header: 'Дії',
+      cell: () => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>
+              <Pen />
+              Редагувати
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Trash2 /> Видалити
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
     },
   ];
 
