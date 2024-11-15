@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { Outlet } from 'react-router-dom';
+import { Toaster } from '@/components/ui/toaster';
 
 export default function Layout() {
   return (
@@ -11,6 +12,7 @@ export default function Layout() {
 
         <Outlet />
       </main>
+      <Toaster />
     </SidebarProvider>
   );
 }

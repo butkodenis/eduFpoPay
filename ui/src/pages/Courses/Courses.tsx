@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
+import { useToast } from '@/hooks/use-toast';
 
 import { SquarePlus, MoreHorizontal, Trash2, Pen } from 'lucide-react';
 
@@ -39,6 +40,9 @@ const Courses = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalCourses, setTotalCourses] = useState<number>(0);
   const [courseFilter, setCourseFilter] = useState<string>('');
+  const [formValues, setFormValues] = useState(null);
+
+  const { toast } = useToast();
 
   const fetchCourses = async (page = 1) => {
     try {
@@ -67,6 +71,8 @@ const Courses = () => {
   const chengeCourse = async (data) => {
     try {
       console.log('Данны формы:', data);
+      setOpen(true);
+      setFormValues(data);
     } catch (error) {
       console.error('Ошибка редактирования курса:', error);
     }
@@ -74,9 +80,15 @@ const Courses = () => {
 
   const deleteCourse = async (id: number) => {
     try {
-      await axios.delete(
+      const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/courses/delete/${id}`
       );
+      console.log('Ответ сервера:', response.data.message || response.data);
+
+      toast({
+        title: 'Курс удален успешно',
+        description: response.data.message,
+      });
       fetchCourses(currentPage);
     } catch (error) {
       console.error('Ошибка удаления курса:', error);
@@ -160,13 +172,38 @@ const Courses = () => {
   }
 
   const onSubmit = async (data: CourseFormValues) => {
-    await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/api/courses/create`,
-      data
-    );
-    console.log('Данные формы:', data);
-    setOpen(false); // Закрытие модального окна
-    fetchCourses(currentPage); // перезагрузка таблицы
+    try {
+      if (formValues) {
+        // Редактирование существующего курса
+        const response = await axios.put(
+          `${import.meta.env.VITE_BASE_URL}/api/courses/update/${
+            formValues.id
+          }`,
+          data
+        );
+
+        toast({
+          title: 'Курс обновлен успешно',
+          description: response.data.message,
+        });
+      } else {
+        // Создание нового курса
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/api/courses/create`,
+          data
+        );
+        toast({
+          title: 'Курс добавлен успешно',
+          description: response.data.message,
+        });
+      }
+      console.log('Данные формы:', data);
+      setOpen(false); // Закрытие модального окна
+      setFormValues(null); // Сброс данных формы
+      fetchCourses(currentPage); // Перезагрузка таблицы
+    } catch (error) {
+      console.error('Ошибка при сохранении курса:', error);
+    }
   };
 
   return (
@@ -201,13 +238,22 @@ const Courses = () => {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[680px]">
                     <DialogHeader>
-                      <DialogTitle>Додати курс</DialogTitle>
+                      <DialogTitle>
+                        {formValues ? 'Змімити курс' : 'Додати курс'}
+                      </DialogTitle>
                       <DialogDescription>
-                        Введіть інформацію про курс та натисніть "Додати"
+                        {formValues
+                          ? 'Змініть інформацію про курс'
+                          : 'Введіть інформацію про курс'}
+                       
                       </DialogDescription>
                     </DialogHeader>
                     {/* Форма добавления курса */}
-                    <CourseForm onSubmit={onSubmit} setOpen={setOpen} />
+                    <CourseForm
+                      onSubmit={onSubmit}
+                      setOpen={setOpen}
+                      initialValues={formValues}
+                    />
                   </DialogContent>
                 </Dialog>
               </div>

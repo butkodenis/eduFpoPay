@@ -29,7 +29,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 
-const CourseForm = ({ onSubmit, setOpen }) => {
+const CourseForm = ({ onSubmit, setOpen, initialValues = null }) => {
   const [departments, setDepartments] = useState([]);
 
   const {
@@ -40,13 +40,13 @@ const CourseForm = ({ onSubmit, setOpen }) => {
   } = useForm({
     resolver: zodResolver(courseSchema),
     defaultValues: {
-      courseName: '',
-      courseType: '',
-      coursePrice: 0,
-      coursePoints: 50,
-      departmentId: '',
-      courseDateStart: '',
-      courseDateEnd: '',
+      courseName: initialValues?.courseName || '',
+      courseType: initialValues?.courseType || '',
+      coursePrice: initialValues?.coursePrice || 0,
+      coursePoints: initialValues?.coursePoints || 50,
+      departmentId: initialValues?.department.id || '',
+      courseDateStart: initialValues?.courseDateStart || '',
+      courseDateEnd: initialValues?.courseDateEnd || '',
     },
   });
 
@@ -314,7 +314,7 @@ const CourseForm = ({ onSubmit, setOpen }) => {
 
       <Button type="submit" className="w-full text-cyan-50">
         <Save />
-        Сохранить
+        {initialValues ? 'Обновить' : 'Сохранить'}
       </Button>
     </form>
   );
