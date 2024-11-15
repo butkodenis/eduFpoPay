@@ -1,16 +1,4 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
-
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -20,55 +8,73 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  rowsPerPage: number;
+  totalItems: number;
+  onPageChange: (page: number) => void;
+  onRowsPerPageChange: (rows: number) => void;
+}
 
-export function PaginationRow() {
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  rowsPerPage,
+  totalItems,
+  onPageChange,
+  onRowsPerPageChange,
+}) => {
   return (
-    <div className="flex items-center justify-end space-x-2 py-4">
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <Link to="#">
-              <ChevronLeft />{' '}
-            </Link>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <Link to="#">
-              <ChevronRight />
-            </Link>
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+    <div className="flex items-center justify-between py-4">
+      {/* Кнопки Назад и Вперед */}
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          <ChevronLeft />
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronRight />
+        </Button>
+      </div>
+
+      {/* Информация о текущей странице */}
+      <div className="flex items-center space-x-2 text-sm">
+        <span>
+          {(currentPage - 1) * rowsPerPage + 1}–
+          {Math.min(currentPage * rowsPerPage, totalItems)} из {totalItems}
+        </span>
+      </div>
+
+      {/* Выбор количества строк на странице */}
       <Select
-        value={rowsPerPage}
-        onValueChange={(value: string) => setRowsPerPage(Number(value))}
+        value={String(rowsPerPage)}
+        onValueChange={(value) => onRowsPerPageChange(Number(value))}
       >
         <SelectTrigger className="w-[80px]">
-          <SelectValue placeholder={`${rowsPerPage} rows per page`} />
+          <SelectValue placeholder={`${rowsPerPage} на сторінці`} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Рядків на сторінці</SelectLabel>
-            <SelectItem value={5}>5</SelectItem>
-            <SelectItem value={10}>10</SelectItem>
-            <SelectItem value={15}>15</SelectItem>
-            <SelectItem value={20}>20</SelectItem>
+            <SelectItem value="5">5</SelectItem>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="15">15</SelectItem>
+            <SelectItem value="20">20</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
     </div>
   );
-}
+};
+
+export default Pagination;

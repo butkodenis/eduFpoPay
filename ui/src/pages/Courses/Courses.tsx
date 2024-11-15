@@ -1,30 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-
-import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { SquarePlus } from 'lucide-react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 import {
   Dialog,
@@ -37,13 +17,11 @@ import {
 
 import axios from 'axios';
 
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-} from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 
 import CourseForm from '@/components/Forms/CourseForm/CourseForm';
+import CoursesTable from '@/components/Table/CoursesTable/CoursesTable';
+import Pagination from '@/components/Pagination/Pagination';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -177,101 +155,22 @@ const Courses = () => {
                 </Dialog>
               </div>
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {table
-                    .getHeaderGroups()
-                    .map((headerGroup) =>
-                      headerGroup.headers.map((header) => (
-                        <TableHead key={header.id}>
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                        </TableHead>
-                      ))
-                    )}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={columns.length}>
-                      <p className="text-lg text-red-600">Завантаження...</p>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow key={row.id}>
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+            {/* Table */}
+            <CoursesTable
+              table={table}
+              isLoading={isLoading}
+              columns={columns}
+            />
 
             {/* Pagination */}
-            <div className="flex items-center justify-between py-4">
-              {/* Кнопки Назад и Вперед */}
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft />
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronRight />
-                </Button>
-              </div>
-
-              {/* Информация о текущей странице */}
-              <div className="flex items-center space-x-2 text-sm">
-                <span>
-                  {(currentPage - 1) * rowsPerPage + 1}–{' '}
-                  {Math.min(currentPage * rowsPerPage, totalCourses)} из{' '}
-                  {totalCourses}
-                </span>
-              </div>
-
-              {/* Выбор количества строк на странице */}
-              <Select
-                value={String(rowsPerPage)} // Преобразуем rowsPerPage в строку для Select
-                onValueChange={(value) => setRowsPerPage(Number(value))} // Преобразуем value в число
-              >
-                <SelectTrigger className="w-[80px]">
-                  <SelectValue placeholder={`${rowsPerPage} на сторінці`} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Рядків на сторінці</SelectLabel>
-                    <SelectItem value="5">5</SelectItem>{' '}
-                    {/* Значения как строки */}
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="15">15</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              rowsPerPage={rowsPerPage}
+              totalItems={totalCourses}
+              onPageChange={setCurrentPage}
+              onRowsPerPageChange={setRowsPerPage}
+            />
           </div>
         </div>
       </div>
