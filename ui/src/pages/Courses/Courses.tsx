@@ -64,6 +64,25 @@ const Courses = () => {
     }
   };
 
+  const chengeCourse = async (data) => {
+    try {
+      console.log('Данны формы:', data);
+    } catch (error) {
+      console.error('Ошибка редактирования курса:', error);
+    }
+  };
+
+  const deleteCourse = async (id: number) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/courses/delete/${id}`
+      );
+      fetchCourses(currentPage);
+    } catch (error) {
+      console.error('Ошибка удаления курса:', error);
+    }
+  };
+
   useEffect(() => {
     fetchCourses(currentPage);
   }, [currentPage, rowsPerPage, courseFilter]);
@@ -95,25 +114,28 @@ const Courses = () => {
     {
       accessorKey: 'actions',
       header: 'Дії',
-      cell: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>
-              <Pen />
-              Редагувати
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Trash2 /> Видалити
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
+      cell: (info) => {
+        const courseId = info.row.original.id; // Получаем id курса из данных строки
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => chengeCourse(info.row.original)}>
+                <Pen />
+                Редагувати
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => deleteCourse(courseId)}>
+                <Trash2 /> Видалити
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
     },
   ];
 
