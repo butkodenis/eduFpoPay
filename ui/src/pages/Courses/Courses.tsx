@@ -68,20 +68,20 @@ const Courses = () => {
   };
 
   const columns = [
-    { accessorKey: 'courseName', header: 'Название' },
+    { accessorKey: 'courseName', header: 'Назва' },
     { accessorKey: 'courseType', header: 'Тип' },
-    { accessorKey: 'coursePrice', header: 'Цена' },
-    { accessorKey: 'coursePoints', header: 'Баллы' },
+    { accessorKey: 'coursePrice', header: 'Вартість' },
+    { accessorKey: 'coursePoints', header: 'Бали' },
     { accessorKey: 'department', header: 'Кафедра' },
     {
       accessorKey: 'courseDateStart',
-      header: 'Начало',
+      header: 'Початок',
       cell: (info: { getValue: () => string | Date }) =>
         format(new Date(info.getValue()), 'yyyy.MM.dd'),
     },
     {
       accessorKey: 'courseDateEnd',
-      header: 'Окончание',
+      header: 'Закінчення',
       cell: (info: { getValue: () => string | Date }) =>
         format(new Date(info.getValue()), 'yyyy.MM.dd'),
     },
@@ -150,6 +150,7 @@ const Courses = () => {
                         Введіть інформацію про курс та натисніть "Додати"
                       </DialogDescription>
                     </DialogHeader>
+                    {/* Форма добавления курса */}
                     <CourseForm onSubmit={onSubmit} setOpen={setOpen} />
                   </DialogContent>
                 </Dialog>
