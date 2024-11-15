@@ -103,6 +103,67 @@ class CourseController {
       res.status(400).json({ message: error.message });
     }
   }
+
+  async deleteCourse(req, res) {
+    try {
+      const { id } = req.params;
+
+      const course = await Courses.findByPk(id);
+
+      if (!course) {
+        return res.status(404).json({
+          message: 'Курс не знайдено',
+        });
+      }
+
+      await course.destroy();
+
+      res.status(200).json({
+        message: `Курс ${course.courseName} успішно видалений`,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  async updateCourse(req, res) {
+    try {
+      const { id } = req.params;
+      const {
+        courseType,
+        courseName,
+        coursePrice,
+        coursePoints,
+        departmentId,
+        courseDateStart,
+        courseDateEnd,
+      } = req.body;
+
+      const course = await Courses.findByPk(id);
+
+      if (!course) {
+        return res.status(404).json({
+          message: 'Курс не знайдено',
+        });
+      }
+
+      await course.update({
+        courseType,
+        courseName,
+        coursePrice,
+        coursePoints,
+        departmentId,
+        courseDateStart,
+        courseDateEnd,
+      });
+
+      res.status(200).json({
+        message: `Курс ${course.courseName} успішно оновлений`,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
 }
 
 module.exports = new CourseController();
