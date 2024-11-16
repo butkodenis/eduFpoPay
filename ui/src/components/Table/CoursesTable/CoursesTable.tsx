@@ -9,8 +9,10 @@ import {
 
 import { flexRender } from '@tanstack/react-table';
 
+import { LoaderCircle, Loader } from 'lucide-react';
+
 interface CoursesTableProps {
-  table: any; 
+  table: any;
   isLoading: boolean;
   columns: { accessorKey: string; header: string }[];
 }
@@ -42,7 +44,9 @@ const CoursesTable: React.FC<CoursesTableProps> = ({
         {isLoading ? (
           <TableRow>
             <TableCell colSpan={columns.length}>
-              <p className="text-lg text-red-600">Завантаження...</p>
+              <svg class="animate-spin h-5 w-5 mr-3 ... " viewBox="0 0 24 24">
+                <LoaderCircle />
+              </svg>
             </TableCell>
           </TableRow>
         ) : (
