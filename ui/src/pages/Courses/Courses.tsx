@@ -227,7 +227,15 @@ const Courses = () => {
               </div>
 
               <div className="flex items-center py-4 ml-auto">
-                <Dialog open={open} onOpenChange={setOpen}>
+                <Dialog
+                  open={open}
+                  onOpenChange={(isOpen) => {
+                    setOpen(isOpen);
+                    if (!isOpen) {
+                      setFormValues(null); // Сбрасываем значения формы при закрытии модального окна
+                    }
+                  }}
+                >
                   <DialogTrigger asChild>
                     <Button>
                       <SquarePlus />
